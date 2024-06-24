@@ -5,6 +5,7 @@ from datetime import datetime
 from tomllib import load
 import inexLogging
 import inexConnect
+from json import dump,dumps
 
 class Inex:
     def __init__(self):
@@ -28,13 +29,19 @@ class Inex:
         self.dbUser = self.config["database"]["user"]
         self.dbPassword = self.config["database"]["password"]
         self.dbQuery = self.config["database"]["query"]
+        self.outputFile = self.config["output"]["filename"]
 
         # create the connection to the database
         self.cursor = self.ic.connectDatabase(self.db, self.dbDriver, self.dbServer, self.dbDatabase, self.dbUser, self.dbPassword)
 
-        self.query = self.ic.databaseQuery(self.cursor, self.dbQuery)
+        self.data = self.ic.databaseQuery(self.cursor, self.dbQuery)
         
-        print(self.query)
+        # self.jsonData = dumps(self.data)
+        # print(self.jsonData)
+
+        with open(self.outputFile, "w") as f:
+            dump(self.data, f)
+
 
 # Run
 if  __name__== "__main__":
