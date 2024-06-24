@@ -1,0 +1,10 @@
+[database]
+driver = "ODBC Driver 18 for SQL Server"
+server = "192.168.x.x"
+database = "EFTDB"
+user = "a"
+password = "a"
+query = "SELECT [Id],[Version] FROM [EFTDB].[dbo].[tbl_Schema_Version]"
+
+[logging]
+use_log = true
