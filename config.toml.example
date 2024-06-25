@@ -6,5 +6,8 @@ user = "a"
 password = "a"
 query = "SELECT [Id],[Version] FROM [EFTDB].[dbo].[tbl_Schema_Version]"
 
+[output]
+filename ="./data.json"
+
 [logging]
 use_log = true
