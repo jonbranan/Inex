@@ -1,11 +1,12 @@
 import pandas
 import pyodbc
 import os
-from datetime import datetime
+import datetime
 from tomllib import load
 import inexLogging
 import inexConnect
-from json import dump,dumps
+import json
+import decimal
 
 class Inex:
     def __init__(self):
@@ -35,13 +36,19 @@ class Inex:
         self.cursor = self.ic.connectDatabase(self.db, self.dbDriver, self.dbServer, self.dbDatabase, self.dbUser, self.dbPassword)
 
         self.data = self.ic.databaseQuery(self.cursor, self.dbQuery)
-        
-        # self.jsonData = dumps(self.data)
-        # print(self.jsonData)
+
+        # print(self.data)
 
         with open(self.outputFile, "w") as f:
-            dump(self.data, f)
+            json.dump(self.data, f, cls=Encoder)
 
+class Encoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            return int(o)
+        if isinstance(o, datetime.datetime):
+            return str(o)
+        return super().default(o)
 
 # Run
 if  __name__== "__main__":
