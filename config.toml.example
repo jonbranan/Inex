@@ -11,3 +11,5 @@ filename ="./data.json"
 
 [logging]
 use_log = true
+logLevel = "debug"
+logPath = "./inex.log"
