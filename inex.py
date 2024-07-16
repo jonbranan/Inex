@@ -6,6 +6,8 @@ import datetime
 from tomllib import load
 from inexLogging import inexLog
 import inexConnect
+from inexDataModel import dataTemplate
+from inexDataProcessing import processData
 import json
 import decimal
 
@@ -43,15 +45,17 @@ class Inex:
         self.cursor = self.ic.connectDatabase(self, self.db, self.dbDriver, self.dbServer, self.dbDatabase, self.dbUser, self.dbPassword)
 
         self.data = self.ic.databaseQuery(self, self.cursor, self.dbQuery)
+        # print(f"returned data: {self.data}")
+        self.modifiedData = processData(self.data, dataTemplate)
 
-        # print(self.data)
+        print(self.modifiedData)
 
         # TODO: move this to its own function
         if self.useLog:
             self.il.warning(f"Writing to '{self.outputFile}'.")
 
         with open(self.outputFile, "w") as f:
-            json.dump(self.data, f, cls=Encoder)
+            json.dump(self.modifiedData, f, indent = 2, cls=Encoder)
 
 # TODO: Move this class to it's own file
 class Encoder(json.JSONEncoder):

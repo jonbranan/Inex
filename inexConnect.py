@@ -18,7 +18,7 @@ def connectDatabase(self, lib, driver, server, database, user, password):
 
     return  cursor
 
-def databaseQuery(self, cursor, query, args=(), one=False):
+def databaseQuery(self, cursor, query, args=()):
     if self.useLog:
         self.il.debug(f"Query:")
         self.il.debug(query)
@@ -38,5 +38,6 @@ def databaseQuery(self, cursor, query, args=(), one=False):
     
     cur.connection.close()
     if self.useLog:
-        self.il.debug(f"Databse connection closed")
-    return (r[0] if r else None) if one else r
+        self.il.debug(f"Database connection closed")
+    # return (r[0] if r else None) if one else r
+    return r
