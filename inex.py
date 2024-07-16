@@ -1,4 +1,3 @@
-import pandas
 import pyodbc
 import os
 import logging
@@ -20,7 +19,6 @@ class Inex:
                 self.config = load(c)
 
         # assign libraries
-        self.pd = pandas
         self.db = pyodbc
         self.tm = datetime
         self.il = logging
