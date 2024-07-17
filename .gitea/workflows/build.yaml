@@ -14,9 +14,10 @@ jobs:
     - run: apt-get update
     - run: apt-get install unixodbc -y
     - run: pip install -r requirements.txt
-    - run: ls ${{ gitea.workspace }}
     - run: pyinstaller --noconfirm --onefile --console ${{ gitea.workspace }}/inex.py
+    - run: ls ${{ gitea.workspace }}
+    - run: ls ${{ gitea.workspace }}/dist/inex/
     - uses: actions/upload-artifact@v4
       with:
         name: Inex
-        path: ${{ gitea.workspace }}/output/inex.exe
+        path: ${{ gitea.workspace }}/dist/inex/inex.exe
