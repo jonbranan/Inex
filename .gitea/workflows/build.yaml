@@ -11,7 +11,8 @@ jobs:
       with:
         python-version: '3.12.4'
         cache: 'pip' # caching pip dependencies
-    - run: apt-get add unixodbc
+    - run: apt-get update
+    - run: apt-get install unixodbc
     - run: pip install -r requirements.txt
     - run: ls ${{ gitea.workspace }}
     - run: pyinstaller --noconfirm --onefile --console ${{ gitea.workspace }}/inex.py
