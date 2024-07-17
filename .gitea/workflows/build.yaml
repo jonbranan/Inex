@@ -1,4 +1,5 @@
 name: Build Inex Executable
+run-name: Deploy to ${{ inputs.deploy_target }} by @${{ gitea.actor }}
 on: [push]
 
 jobs:
@@ -11,8 +12,8 @@ jobs:
         python-version: '3.12.4'
         cache: 'pip' # caching pip dependencies
     - run: pip install -r requirements.txt
-    - run: pyinstaller --noconfirm --onefile --console "$GITEA_WORKSPACE/inex.py"
+    - run: pyinstaller --noconfirm --onefile --console "${{ gitea.workspace }}/inex.py"
     - uses: actions/upload-artifact@v4
       with:
         name: Inex
-        path: $GITEA_WORKSPACE/output/inex.exe
+        path: ${{ gitea.workspace }}/output/inex.exe
