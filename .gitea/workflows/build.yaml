@@ -4,15 +4,14 @@ on: [push]
 
 jobs:
   Build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
         python-version: '3.12.4'
         cache: 'pip' # caching pip dependencies
-    - run: rm /etc/apt/sources.list.d/mssql-release.list
-    - run: apt-get install unixodbc
+    - run: apt-get add unixodbc
     - run: pip install -r requirements.txt
     - run: ls ${{ gitea.workspace }}
     - run: pyinstaller --noconfirm --onefile --console ${{ gitea.workspace }}/inex.py
