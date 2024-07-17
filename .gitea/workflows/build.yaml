@@ -11,8 +11,8 @@ jobs:
         python-version: '3.12.4'
         cache: 'pip' # caching pip dependencies
     - run: pip install -r requirements.txt
-    - run: pyinstaller --noconfirm --onefile --console "/workspace/jblu/Inex/inex.py"
+    - run: pyinstaller --noconfirm --onefile --console "$GITEA_WORKSPACE/inex.py"
     - uses: actions/upload-artifact@v4
       with:
         name: Inex
-        path: /workspace/jblu/Inex/output/inex.exe
+        path: $GITEA_WORKSPACE/output/inex.exe
