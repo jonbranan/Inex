@@ -3,7 +3,7 @@ run-name: Deploy to ${{ inputs.deploy_target }} by @${{ gitea.actor }}
 on: [push]
 
 jobs:
-  Build:
+  linux:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4

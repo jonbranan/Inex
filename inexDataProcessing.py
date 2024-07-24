@@ -1,4 +1,4 @@
-def processData(data, template):
+def processData(data, template, **kwargs):
     processedData = []
     for row in data:
         # print(f'Row: {row}')
@@ -11,10 +11,10 @@ def processData(data, template):
                             file_name=row.get('FileName'),\
                             guid=row.get('TransactionGUID'),\
                             ref_id=row.get('ProtocolCommandID'),\
-                            prd_instance_id=row.get(''),\
-                            product_guid=row.get(''),\
-                            product_name=row.get(''),\
-                            product_version=row.get(''),\
+                            prd_instance_id=kwargs.get('prd_instance_id'),\
+                            product_guid=kwargs.get('product_guid'),\
+                            product_name=kwargs.get('product_name'),\
+                            product_version=kwargs.get('product_version'),\
                             node_name=row.get('NodeName'),\
                             src_endpoint_port=row.get('RemotePort'),\
                             src_endpoint_ip=row.get('RemoteIP'),\
@@ -25,8 +25,17 @@ def processData(data, template):
                             bytes_out=row.get('BytesTransferred'),\
                             transfer_time=row.get('TransferTime'),\
                             time=row.get('Time_stamp'),\
-                            user_type=row.get(''),\
+                            user_type=identifyUserType(row.get('user_type')),\
                             user_domain=row.get('SiteName'),\
                             user_name=row.get('Actor'),\
-                            utype=row.get('Command')))
+                            utype=row.get('TransactionObject')))
     return processedData
+
+def identifyUserType(obj):
+    if obj:
+        if "Admin" in obj:
+            return "Administrator"
+        else:
+            return "User"
+    else:
+        return None

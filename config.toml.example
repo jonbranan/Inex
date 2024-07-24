@@ -4,7 +4,41 @@ server = "192.168.x.x"
 database = "EFTDB"
 user = "a"
 password = "a"
-query = "SELECT [Id],[Version] FROM [EFTDB].[dbo].[tbl_Schema_Version]"
+query = """DECLARE	@stopTime DATETIME2
+SET @stopTime = DATEADD(DAY, -30, GETDATE())
+SELECT [ProtocolCommandID]
+      ,p.[Time_stamp]
+      ,[RemoteIP]
+      ,[RemotePort]
+      ,[LocalIP]
+      ,[LocalPort]
+      ,[Protocol]
+      ,[SiteName]
+      ,[Command]
+      ,[CommandParameters]
+      ,[FileName]
+      ,[VirtualFolderName]
+      ,[PhysicalFolderName]
+      ,[IsInternal]
+      ,[FileSize]
+      ,[TransferTime]
+      ,[BytesTransferred]
+      ,[ResultID]
+      ,p.[TransactionID]
+      ,[Description]
+      ,[Actor]
+	  ,t.ParentTransactionID
+	  ,t.TransactionObject
+	  ,t.NodeName
+	  ,t.TransactionGUID
+  FROM [EFTDB].[dbo].[tbl_ProtocolCommands] p Full JOIN tbl_Transactions t ON (p.TransactionID = t.TransactionID)
+  WHERE p.Time_stamp > @stopTime"""
+
+[immutables]
+prd_instance_id = 1
+product_guid = "asdf"
+product_name = "EFT"
+product_version ="8.1.0.9"
 
 [output]
 filename ="./data.json"

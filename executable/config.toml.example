@@ -4,8 +4,28 @@ server = "192.168.x.x"
 database = "EFTDB"
 user = "a"
 password = "a"
-query = "SELECT [Id],[Version] FROM [EFTDB].[dbo].[tbl_Schema_Version]"
-
+query = """SELECT TOP (1) [ProtocolCommandID]
+      ,[Time_stamp]
+      ,[RemoteIP]
+      ,[RemotePort]
+      ,[LocalIP]
+      ,[LocalPort]
+      ,[Protocol]
+      ,[SiteName]
+      ,[Command]
+      ,[CommandParameters]
+      ,[FileName]
+      ,[VirtualFolderName]
+      ,[PhysicalFolderName]
+      ,[IsInternal]
+      ,[FileSize]
+      ,[TransferTime]
+      ,[BytesTransferred]
+      ,[ResultID]
+      ,[TransactionID]
+      ,[Description]
+      ,[Actor]
+  FROM [EFTDB].[dbo].[tbl_ProtocolCommands]"""
 [output]
 filename ="./data.json"
 

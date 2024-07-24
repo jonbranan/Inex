@@ -35,6 +35,10 @@ class Inex:
         self.useLog = self.config["logging"]["useLog"]
         self.logPath = self.config["logging"]["logPath"]
         self.logLevel = self.config["logging"]["logLevel"]
+        self.prdInstanceID = self.config["immutables"]["prd_instance_id"]
+        self.productGUID = self.config["immutables"]["product_guid"]
+        self.productName = self.config["immutables"]["product_name"]
+        self.productVersion = self.config["immutables"]["product_version"]
         
         #Setup logging
         inexLog(self)
@@ -43,10 +47,10 @@ class Inex:
         self.cursor = self.ic.connectDatabase(self, self.db, self.dbDriver, self.dbServer, self.dbDatabase, self.dbUser, self.dbPassword)
 
         self.data = self.ic.databaseQuery(self, self.cursor, self.dbQuery)
-        # print(f"returned data: {self.data}")
-        self.modifiedData = processData(self.data, dataTemplate)
 
-        print(self.modifiedData)
+        self.modifiedData = processData(self.data, dataTemplate, prd_instance_id=self.prdInstanceID,\
+                                         product_guid=self.productGUID,product_name=self.productName,product_version=self.productVersion)
+
 
         # TODO: move this to its own function
         if self.useLog:
