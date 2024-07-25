@@ -18,10 +18,20 @@ jobs:
     - uses: softprops/action-gh-release@v2
     - name: Release
       uses: softprops/action-gh-release@v2
-      if: startsWith(github.ref, 'refs/tags/')
+      if: startsWith(gitea.ref, 'refs/tags/')
       with:
         files: ${{ gitea.workspace }}/dist/inex
   build-windows-binary:
     runs-on: windows
+    permissions:
+      contents: write # release changes require contents write
+
     steps:
+      - uses: actions/checkout@v4
+      - name: Upload Release Asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITEA_TOKEN }}
+        run: pip install -r requirements.txt
+        run: pyinstaller --noconfirm --onefile --console ${{ gitea.workspace }}/inex.py
+        run: gh release upload <release_tag> <a_file>
       
