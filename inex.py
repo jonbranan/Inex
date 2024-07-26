@@ -9,6 +9,7 @@ from inexDataModel import dataTemplate
 from inexDataProcessing import processData
 import json
 import decimal
+import requests
 
 class Inex:
     def __init__(self):
@@ -23,6 +24,7 @@ class Inex:
         self.tm = datetime
         self.il = logging
         self.ic = inexConnect
+        self.r = requests
 
         # set config
         self.dbDriver = self.config["database"]["driver"]

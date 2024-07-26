@@ -41,3 +41,21 @@ def databaseQuery(self, cursor, query, args=()):
         self.il.debug(f"Database connection closed")
     # return (r[0] if r else None) if one else r
     return r
+
+def renewToken(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except error:
+                getToken()
+            return func(*args, **kwargs)
+        return wrapper
+
+def getToken(idpUrl, id, secret):
+    pass
+
+@renewToken
+def pushPayload(reqObj, targetUrl, token, payload):
+    pushPayloadResponse = reqObj.post(targetUrl, headers={"Bearer": token},\
+                                       payload=payload,verify=False)
+    return pushPayloadResponse.status_code
