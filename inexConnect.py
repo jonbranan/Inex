@@ -42,20 +42,12 @@ def databaseQuery(self, cursor, query, args=()):
     # return (r[0] if r else None) if one else r
     return r
 
-def renewToken(func):
-        def wrapper(*args, **kwargs):
-            try:
-                return func(*args, **kwargs)
-            except error:
-                getToken()
-            return func(*args, **kwargs)
-        return wrapper
+def getToken(reqObj,idpUrl, id, secret):
+    getTokenResponse = reqObj.post(idpUrl, headers={"client_id": id,"client_secret": secret})
+    return getTokenResponse["access_token"]
 
-def getToken(idpUrl, id, secret):
-    pass
-
-@renewToken
-def pushPayload(reqObj, targetUrl, token, payload):
-    pushPayloadResponse = reqObj.post(targetUrl, headers={"Bearer": token},\
-                                       payload=payload,verify=False)
+def pushPayload(reqObj, host, token, tenant_id, payload):
+    url = f'{host}/api/v1/unity/data/{tenant_id}/machine_event'
+    pushPayloadResponse = reqObj.post(url, headers={'Authorization': f'bearer {token}'},\
+                                       payload=payload)
     return pushPayloadResponse.status_code
