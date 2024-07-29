@@ -42,21 +42,32 @@ def databaseQuery(self, cursor, query, args=()):
     return r
 
 class fortraEFC:
-    def __init__(self):
+    def getToken(self):
+        self.tokenData = self.r.post(self.platformConfig["idp"], data={"grant_type":"client_credentials",\
+                                                                              "client_id": self.platformConfig["client_id"],\
+                                                                              "client_secret": self.platformConfig["secret"],})
+    def writeToken(self):
+        fortraEFC.getToken(self)
+        with open(self.tokenFilepath, "w") as f:
+            self.j.dump(self.tokenData.json(), f, indent = 2)
+
+    def readToken(self):
         if self.os.path.exists(self.tokenFilepath):
             with open(self.tokenFilepath, 'rb') as t:
-                self.token = self.j.load(t)
-                print(self.token["access_token"])
+                self.tokenData = self.j.load(t)
+                # print(self.tokenData["access_token"])
+        else:
+            fortraEFC.writeToken(self)
 
-    def saveToken(self):
-        with open(self.tokenFilepath, "w") as f:
-             self.j.dump(self.tokenData, f, indent = 2)
-
-    def getToken(self):
-        self.tokenData = self.r.post(self.platformConfig["idp"], headers={"client_id": self.platformConfig["client_id"],"client_secret": self.platformConfig["secret"]})
-        
     def pushPayload(self):
-        url = f'{self.host}/api/v1/unity/data/{self.tenant_id}/machine_event'
-        pushPayloadResponse = self.r.post(self.platformConfig["efc_url"], headers={'Authorization': f'bearer {self.token["access_token"]}'},\
-                                           payload=self.modifiedData)
-        return pushPayloadResponse.status_code
+        fortraEFC.readToken(self)
+        try:
+            url = f'{self.platformConfig["efc_url"]}/api/v1/unity/data/{self.platformConfig["tenant_id"]}/machine_event'
+            pushPayloadResponse = self.r.post(url, headers={'Authorization': f'bearer {self.tokenData["access_token"]}'},\
+                                               json=self.j.dumps(self.modifiedData,indent = 2, cls=self.e))
+            return pushPayloadResponse.status_code
+        except self.r.exceptions.HTTPError as errh:
+            print ("Http Error:",errh)
+            if "401" in errh:
+                fortraEFC.writeToken(self)
+                fortraEFC.pushPayload(self)

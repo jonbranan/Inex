@@ -10,6 +10,7 @@ from inexDataProcessing import processData
 import json
 import decimal
 import requests
+import inexEncoder
 
 class Inex:
     def __init__(self):
@@ -23,6 +24,7 @@ class Inex:
         self.tl = tomllib
         self.os = os
         self.j = json
+        self.e = inexEncoder.Encoder
 
         if self.os.path.exists('./config.toml'):
             config_file_path = './config.toml'
@@ -46,6 +48,8 @@ class Inex:
         self.productVersion = self.config["immutables"]["product_version"]
         self.tokenFilepath = self.config["output"]["token"]
         self.selectedPlatform = self.config["fortraPlatform"]["selectedPlatform"]
+        self.writeJsonfile = self.config["output"]["dumpTojson"]
+        self.pushToplatform = self.config["output"]["pushToplatform"]
 
         if "dev" in self.selectedPlatform.lower():
             self.platformConfig = self.config["fortraPlatform"]["dev"]
@@ -53,34 +57,28 @@ class Inex:
             self.platformConfig = self.config["fortraPlatform"]["stage"]
         if "prod" in self.selectedPlatform.lower():
             self.platformConfig = self.config["fortraPlatform"]["prod"]
-        print(self.platformConfig)
+        # print(self.platformConfig)
 
         #Setup logging
         inexLog(self)
 
         # create the connection to the database
-        # self.cursor = self.ic.connectDatabase(self, self.db, self.dbDriver, self.dbServer, self.dbDatabase, self.dbUser, self.dbPassword)
+        self.cursor = self.ic.connectDatabase(self, self.db, self.dbDriver, self.dbServer, self.dbDatabase, self.dbUser, self.dbPassword)
 
-        # self.data = self.ic.databaseQuery(self, self.cursor, self.dbQuery)
+        self.data = self.ic.databaseQuery(self, self.cursor, self.dbQuery)
 
-        # self.modifiedData = processData(self.data, dataTemplate, prd_instance_id=self.prdInstanceID,\
-        #                                  product_guid=self.productGUID,product_name=self.productName,product_version=self.productVersion)
+        self.modifiedData = processData(self.data, dataTemplate, prd_instance_id=self.prdInstanceID,\
+                                         product_guid=self.productGUID,product_name=self.productName,product_version=self.productVersion)
         
-        # # TODO: move this to its own function
-        # if self.useLog:
-        #     self.il.warning(f"Writing to '{self.outputFile}'.")
+        if self.pushToplatform:
+            inexConnect.fortraEFC.pushPayload(self)
 
-        # with open(self.outputFile, "w") as f:
-        #     json.dump(self.modifiedData, f, indent = 2, cls=Encoder)
-
-# TODO: Move this class to it's own file
-class Encoder(json.JSONEncoder):
-    def default(self, o):
-        if isinstance(o, decimal.Decimal):
-            return int(o)
-        if isinstance(o, datetime.datetime):
-            return str(o)
-        return super().default(o)
+        # TODO: move this to its own function
+        if self.useLog:
+            self.il.warning(f"Writing to '{self.outputFile}'.")
+        if self.writeJsonfile:
+            with open(self.outputFile, "w") as f:
+                self.j.dump(self.modifiedData, f, indent = 2, cls=self.e)
 
 # Run
 if  __name__== "__main__":
