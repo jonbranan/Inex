@@ -2,7 +2,7 @@ import pyodbc
 import os
 import logging
 import datetime
-from tomllib import load
+import tomllib
 from inexLogging import inexLog
 import inexConnect
 from inexDataModel import dataTemplate
@@ -14,18 +14,21 @@ import requests
 class Inex:
     def __init__(self):
         """Initilize config, calls functions from inex-connect.py and inex-logging.py"""
-        if os.path.exists('./config.toml'):
-            config_file_path = './config.toml'
-            with open(config_file_path, 'rb') as c:
-                self.config = load(c)
-
         # assign libraries
         self.db = pyodbc
         self.tm = datetime
         self.il = logging
         self.ic = inexConnect
         self.r = requests
+        self.tl = tomllib
+        self.os = os
+        self.j = json
 
+        if self.os.path.exists('./config.toml'):
+            config_file_path = './config.toml'
+            with open(config_file_path, 'rb') as c:
+                self.config = self.tl.load(c)
+        
         # set config
         self.dbDriver = self.config["database"]["driver"]
         self.dbServer = self.config["database"]["server"]
@@ -41,25 +44,34 @@ class Inex:
         self.productGUID = self.config["immutables"]["product_guid"]
         self.productName = self.config["immutables"]["product_name"]
         self.productVersion = self.config["immutables"]["product_version"]
-        
+        self.tokenFilepath = self.config["output"]["token"]
+        self.selectedPlatform = self.config["fortraPlatform"]["selectedPlatform"]
+
+        if "dev" in self.selectedPlatform.lower():
+            self.platformConfig = self.config["fortraPlatform"]["dev"]
+        if "stag" in self.selectedPlatform.lower():
+            self.platformConfig = self.config["fortraPlatform"]["stage"]
+        if "prod" in self.selectedPlatform.lower():
+            self.platformConfig = self.config["fortraPlatform"]["prod"]
+        print(self.platformConfig)
+
         #Setup logging
         inexLog(self)
 
         # create the connection to the database
-        self.cursor = self.ic.connectDatabase(self, self.db, self.dbDriver, self.dbServer, self.dbDatabase, self.dbUser, self.dbPassword)
+        # self.cursor = self.ic.connectDatabase(self, self.db, self.dbDriver, self.dbServer, self.dbDatabase, self.dbUser, self.dbPassword)
 
-        self.data = self.ic.databaseQuery(self, self.cursor, self.dbQuery)
+        # self.data = self.ic.databaseQuery(self, self.cursor, self.dbQuery)
 
-        self.modifiedData = processData(self.data, dataTemplate, prd_instance_id=self.prdInstanceID,\
-                                         product_guid=self.productGUID,product_name=self.productName,product_version=self.productVersion)
+        # self.modifiedData = processData(self.data, dataTemplate, prd_instance_id=self.prdInstanceID,\
+        #                                  product_guid=self.productGUID,product_name=self.productName,product_version=self.productVersion)
+        
+        # # TODO: move this to its own function
+        # if self.useLog:
+        #     self.il.warning(f"Writing to '{self.outputFile}'.")
 
-
-        # TODO: move this to its own function
-        if self.useLog:
-            self.il.warning(f"Writing to '{self.outputFile}'.")
-
-        with open(self.outputFile, "w") as f:
-            json.dump(self.modifiedData, f, indent = 2, cls=Encoder)
+        # with open(self.outputFile, "w") as f:
+        #     json.dump(self.modifiedData, f, indent = 2, cls=Encoder)
 
 # TODO: Move this class to it's own file
 class Encoder(json.JSONEncoder):

@@ -39,15 +39,24 @@ def databaseQuery(self, cursor, query, args=()):
     cur.connection.close()
     if self.useLog:
         self.il.debug(f"Database connection closed")
-    # return (r[0] if r else None) if one else r
     return r
 
-def getToken(reqObj,idpUrl, id, secret):
-    getTokenResponse = reqObj.post(idpUrl, headers={"client_id": id,"client_secret": secret})
-    return getTokenResponse["access_token"]
+class fortraEFC:
+    def __init__(self):
+        if self.os.path.exists(self.tokenFilepath):
+            with open(self.tokenFilepath, 'rb') as t:
+                self.token = self.j.load(t)
+                print(self.token["access_token"])
 
-def pushPayload(reqObj, host, token, tenant_id, payload):
-    url = f'{host}/api/v1/unity/data/{tenant_id}/machine_event'
-    pushPayloadResponse = reqObj.post(url, headers={'Authorization': f'bearer {token}'},\
-                                       payload=payload)
-    return pushPayloadResponse.status_code
+    def saveToken(self):
+        with open(self.tokenFilepath, "w") as f:
+             self.j.dump(self.tokenData, f, indent = 2)
+
+    def getToken(self):
+        self.tokenData = self.r.post(self.platformConfig["idp"], headers={"client_id": self.platformConfig["client_id"],"client_secret": self.platformConfig["secret"]})
+        
+    def pushPayload(self):
+        url = f'{self.host}/api/v1/unity/data/{self.tenant_id}/machine_event'
+        pushPayloadResponse = self.r.post(self.platformConfig["efc_url"], headers={'Authorization': f'bearer {self.token["access_token"]}'},\
+                                           payload=self.modifiedData)
+        return pushPayloadResponse.status_code
