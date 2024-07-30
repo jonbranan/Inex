@@ -26,6 +26,7 @@ jobs:
       contents: write # release changes require contents write
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
       # - name: Upload Release Asset
       ##   env:
       #     GITHUB_TOKEN: ${{ secrets.GITEA_TOKEN }}
