@@ -3,29 +3,28 @@ name: Build
 on: push
 
 jobs:
-  build-linux-binary:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.12.4'
-        cache: 'pip' # caching pip dependencies
-    - run: apt-get update
-    - run: apt-get install unixodbc -y
-    - run: pip install -r requirements.txt
-    - run: pyinstaller --noconfirm --onefile --console ${{ gitea.workspace }}/inex.py
-    - uses: softprops/action-gh-release@v2
-    - name: Release
-      uses: softprops/action-gh-release@v2
-      if: startsWith(gitea.ref, 'refs/tags/')
-      with:
-        files: ${{ gitea.workspace }}/dist/inex
+  # build-linux-binary:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - uses: actions/setup-python@v5
+  #     with:
+  #       python-version: '3.12.4'
+  #       cache: 'pip' # caching pip dependencies
+  #   - run: apt-get update
+  #   - run: apt-get install unixodbc -y
+  #   - run: pip install -r requirements.txt
+  #   - run: pyinstaller --noconfirm --onefile --console ${{ gitea.workspace }}/inex.py
+  #   - uses: softprops/action-gh-release@v2
+  #   - name: Release
+  #     uses: softprops/action-gh-release@v2
+  #     if: startsWith(gitea.ref, 'refs/tags/')
+  #     with:
+  #       files: ${{ gitea.workspace }}/dist/inex
   build-windows-binary:
     runs-on: windows
     permissions:
       contents: write # release changes require contents write
-
     steps:
       - uses: actions/checkout@v4
       - name: Upload Release Asset
@@ -33,5 +32,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITEA_TOKEN }}
         run: pip install -r requirements.txt
         run: pyinstaller --noconfirm --onefile --console ${{ gitea.workspace }}/inex.py
-        run: gh release upload <release_tag> <a_file>
+        # run: gh release upload <release_tag> <a_file>
       
