@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       # - name: Upload Release Asset
-      #   env:
+      ##   env:
       #     GITHUB_TOKEN: ${{ secrets.GITEA_TOKEN }}
       - run: pip install -r requirements.txt
       - run: pyinstaller --noconfirm --onefile --console ${{ gitea.workspace }}/inex.py
