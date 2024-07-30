@@ -26,10 +26,10 @@ jobs:
       contents: write # release changes require contents write
     steps:
       - uses: actions/checkout@v4
-      - name: Upload Release Asset
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITEA_TOKEN }}
-        run: pip install -r requirements.txt
-        run: pyinstaller --noconfirm --onefile --console ${{ gitea.workspace }}/inex.py
+      # - name: Upload Release Asset
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITEA_TOKEN }}
+      - run: pip install -r requirements.txt
+      - run: pyinstaller --noconfirm --onefile --console ${{ gitea.workspace }}/inex.py
         # run: gh release upload <release_tag> <a_file>
       
