@@ -53,3 +53,5 @@ def identifyUtype(obj):
         return "file_uploaded"
     if obj in file_downloaded:
         return "file_downloaded"
+    else:
+        return None
