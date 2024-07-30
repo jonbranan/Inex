@@ -36,4 +36,4 @@ jobs:
       - run: python -m pip install -r requirements.txt
       - run: pyinstaller --noconfirm --onefile --console ${{ gitea.workspace }}/inex.py
         # run: gh release upload <release_tag> <a_file>
-      
+      - run: dir ${{ gitea.workspace }}
