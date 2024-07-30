@@ -1,3 +1,27 @@
+[fortraPlatform]
+selectedPlatform = "dev"
+
+[fortraPlatform.dev]
+idp = "https://foundation.foundation-dev.cloudops.fortradev.com/idp/realms/products/protocol/openid-connect/token"
+efc_url = "https://efc.efc-dev.cloudops.fortradev.com"
+tenant_id = ""
+client_id = "eft-event-generator-confidential"
+secret = ""
+
+[fortraPlatform.stage]
+idp = "https://foundation.foundation-stage.cloudops.fortradev.com/idp/realms/products/protocol/openid-connect/token"
+efc_url = "https://efc.efc-stage.cloudops.fortradev.com"
+tenant_id = ""
+client_id = "eft-event-generator-confidential"
+secret = ""
+
+[fortraPlatform.prod]
+idp ="https://foundation.foundation-prod.cloudops.fortradev.com/idp/realms/products/protocol/openid-connect/token"
+efc_url = "https://efc.efc-prod.cloudops.fortradev.com"
+tenant_id = ""
+client_id = "eft-event-generator-confidential"
+secret = ""
+
 [database]
 driver = "ODBC Driver 18 for SQL Server"
 server = "192.168.x.x"
@@ -6,32 +30,33 @@ user = "a"
 password = "a"
 query = """DECLARE	@stopTime DATETIME2
 SET @stopTime = DATEADD(DAY, -30, GETDATE())
-SELECT [ProtocolCommandID]
-      ,p.[Time_stamp]
-      ,[RemoteIP]
-      ,[RemotePort]
-      ,[LocalIP]
-      ,[LocalPort]
-      ,[Protocol]
-      ,[SiteName]
-      ,[Command]
-      ,[CommandParameters]
-      ,[FileName]
-      ,[VirtualFolderName]
-      ,[PhysicalFolderName]
-      ,[IsInternal]
-      ,[FileSize]
-      ,[TransferTime]
-      ,[BytesTransferred]
-      ,[ResultID]
-      ,p.[TransactionID]
-      ,[Description]
-      ,[Actor]
+SELECT p.[ProtocolCommandID]
+      ,t.[Time_stamp]
+      ,p.[RemoteIP]
+      ,p.[RemotePort]
+      ,p.[LocalIP]
+      ,p.[LocalPort]
+      ,p.[Protocol]
+      ,p.[SiteName]
+      ,p.[Command]
+      ,p.[CommandParameters]
+      ,p.[FileName]
+      ,p.[VirtualFolderName]
+      ,p.[PhysicalFolderName]
+      ,p.[IsInternal]
+      ,p.[FileSize]
+      ,p.[TransferTime]
+      ,p.[BytesTransferred]
+      ,p.[ResultID]
+      ,t.[TransactionID]
+      ,p.[Description]
+      ,p.[Actor]
 	  ,t.ParentTransactionID
 	  ,t.TransactionObject
 	  ,t.NodeName
 	  ,t.TransactionGUID
-  FROM [EFTDB].[dbo].[tbl_ProtocolCommands] p Full JOIN tbl_Transactions t ON (p.TransactionID = t.TransactionID)
+	  ,a.Protocol user_type
+  FROM [EFTDB].[dbo].[tbl_Transactions] t Full JOIN tbl_ProtocolCommands p ON (t.TransactionID = p.TransactionID) Full join tbl_Authentications a ON (t.TransactionID = a.TransactionID)
   WHERE p.Time_stamp > @stopTime"""
 
 [immutables]
@@ -41,7 +66,10 @@ product_name = "EFT"
 product_version ="8.1.0.9"
 
 [output]
+pushToplatform = true
+dumpTojson = true
 filename ="./data.json"
+token = "./.token"
 
 [logging]
 use_log = true

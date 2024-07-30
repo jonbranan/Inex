@@ -28,7 +28,7 @@ def processData(data, template, **kwargs):
                             user_type=identifyUserType(row.get('user_type')),\
                             user_domain=row.get('SiteName'),\
                             user_name=row.get('Actor'),\
-                            utype=row.get('TransactionObject')))
+                            utype=identifyUtype(row.get('TransactionObject'))))
     return processedData
 
 def identifyUserType(obj):
@@ -37,5 +37,21 @@ def identifyUserType(obj):
             return "Administrator"
         else:
             return "User"
+    else:
+        return None
+def identifyUtype(obj):
+    user_logged_on = []
+    file_deleted = []
+    file_uploaded = []
+    file_downloaded = []
+
+    if obj in user_logged_on:
+        return "user_logged_on"
+    if obj in file_deleted:
+        return "file_deleted"
+    if obj in file_uploaded:
+        return "file_uploaded"
+    if obj in file_downloaded:
+        return "file_downloaded"
     else:
         return None

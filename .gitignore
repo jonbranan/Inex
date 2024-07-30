@@ -1,4 +1,5 @@
-*config.toml
+*.toml
 *.json
 __pycache__/
 *.log
+*.token
