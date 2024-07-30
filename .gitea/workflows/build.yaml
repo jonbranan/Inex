@@ -21,7 +21,7 @@ jobs:
   #     with:
   #       files: ${{ gitea.workspace }}/dist/inex
   build-windows-binary:
-    runs-on: windows:host
+    runs-on: windows
     permissions:
       contents: write # release changes require contents write
     steps:
