@@ -14,12 +14,7 @@ jobs:
   #   - run: apt-get install unixodbc -y
   #   - run: pip install -r requirements.txt
   #   - run: pyinstaller --noconfirm --onefile --console ${{ gitea.workspace }}/inex.py
-  #   - uses: softprops/action-gh-release@v2
-  #   - name: Release
-  #     uses: softprops/action-gh-release@v2
-  #     if: startsWith(gitea.ref, 'refs/tags/')
-  #     with:
-  #       files: ${{ gitea.workspace }}/dist/inex
+
   build-windows-binary:
     runs-on: windows
     permissions:
@@ -30,10 +25,9 @@ jobs:
         with:
           python-version: '3.12.4'
           cache: 'pip' # caching pip dependencies
-      # - name: Upload Release Asset
-      ##   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITEA_TOKEN }}
       - run: python -m pip install -r requirements.txt
       - run: pyinstaller --noconfirm --onefile --console ${{ gitea.workspace }}/inex.py
-        # run: gh release upload <release_tag> <a_file>
-      - run: dir ${{ gitea.workspace }}
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(gitea.ref, 'refs/tags/')
+        with:
+          files: ${{ gitea.workspace }}/dist/inex.exe
