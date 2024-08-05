@@ -1,23 +1,20 @@
 import pyodbc
 import os
 import logging
-import datetime
 import tomllib
 from inexLogging import inexLog
 import inexConnect
 from inexDataModel import dataTemplate
 from inexDataProcessing import processData
 import json
-import decimal
 import requests
 import inexEncoder
-
+import inexSqlquery
 class Inex:
     def __init__(self):
         """Initilize config, calls functions from inex-connect.py and inex-logging.py"""
         # assign libraries
         self.db = pyodbc
-        self.tm = datetime
         self.il = logging
         self.ic = inexConnect
         self.r = requests
@@ -25,6 +22,7 @@ class Inex:
         self.os = os
         self.j = json
         self.e = inexEncoder.Encoder
+        self.sq = inexSqlquery
 
         if self.os.path.exists('./config.toml'):
             config_file_path = './config.toml'
@@ -63,9 +61,11 @@ class Inex:
         inexLog(self)
 
         # create the connection to the database
-        self.cursor = self.ic.connectDatabase(self, self.db, self.dbDriver, self.dbServer, self.dbDatabase, self.dbUser, self.dbPassword)
+        self.cursor = self.ic.inexSql.connectDatabase(self, self.db, self.dbDriver, self.dbServer, self.dbDatabase, self.dbUser, self.dbPassword)
 
-        self.data = self.ic.databaseQuery(self, self.cursor, self.dbQuery)
+        # self.data = self.ic.inexSql.databaseQuery(self, self.cursor, self.dbQuery)
+
+        self.data = self.ic.inexSql.databaseQuery(self, self.cursor, self.sq.sqlQuerymodel.queryData())
 
         self.modifiedData = processData(self.data, dataTemplate, prd_instance_id=self.prdInstanceID,\
                                          product_guid=self.productGUID,product_name=self.productName,product_version=self.productVersion)
