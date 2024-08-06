@@ -1,8 +1,10 @@
 def processData(data, template, **kwargs):
     processedData = []
     for row in data:
-        # print(f'Row: {row}')
-        processedData.append(template(status=row.get(''),\
+        print(f'Row: {row}')
+        if row.get('Command') == None:
+            continue
+        processedData.append(template(identifyUtype(row.get('Command')),\
                             status_detail=row.get(''),\
                             status_code=row.get('ResultID'),\
                             file_size=row.get('FileSize'),\
@@ -28,7 +30,7 @@ def processData(data, template, **kwargs):
                             user_type=identifyUserType(row.get('user_type')),\
                             user_domain=row.get('SiteName'),\
                             user_name=row.get('Actor'),\
-                            utype=identifyUtype(row.get('TransactionObject'))))
+                            utype=identifyUtype(row.get('Command'))))
     return processedData
 
 def identifyUserType(obj):
@@ -41,9 +43,9 @@ def identifyUserType(obj):
         return None
 def identifyUtype(obj):
     user_logged_on = []
-    file_deleted = []
-    file_uploaded = []
-    file_downloaded = []
+    file_deleted = ["dele"]
+    file_uploaded = ["created"]
+    file_downloaded = ["sent"]
 
     if obj in user_logged_on:
         return "user_logged_on"
