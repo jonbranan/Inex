@@ -10,6 +10,7 @@ import json
 import requests
 import inexEncoder
 import inexSqlquery
+
 class Inex:
     def __init__(self):
         """Initilize config, calls functions from inex-connect.py and inex-logging.py"""
@@ -30,24 +31,30 @@ class Inex:
                 self.config = self.tl.load(c)
         
         # set config
-        self.dbDriver = self.config["database"]["driver"]
-        self.dbServer = self.config["database"]["server"]
-        self.dbDatabase = self.config["database"]["database"]
-        self.dbUser = self.config["database"]["user"]
-        self.dbPassword = self.config["database"]["password"]
-        self.dbQuery = self.config["database"]["query"]
-        self.outputFile = self.config["output"]["filename"]
-        self.useLog = self.config["logging"]["useLog"]
-        self.logPath = self.config["logging"]["logPath"]
-        self.logLevel = self.config["logging"]["logLevel"]
-        self.prdInstanceID = self.config["immutables"]["prd_instance_id"]
-        self.productGUID = self.config["immutables"]["product_guid"]
-        self.productName = self.config["immutables"]["product_name"]
-        self.productVersion = self.config["immutables"]["product_version"]
-        self.tokenFilepath = self.config["output"]["token"]
-        self.selectedPlatform = self.config["fortraPlatform"]["selectedPlatform"]
-        self.writeJsonfile = self.config["output"]["dumpTojson"]
-        self.pushToplatform = self.config["output"]["pushToplatform"]
+        try:
+            if self.config:
+                self.dbDriver = self.config["database"]["driver"]
+                self.dbServer = self.config["database"]["server"]
+                self.dbDatabase = self.config["database"]["database"]
+                self.dbUser = self.config["database"]["user"]
+                self.dbPassword = self.config["database"]["password"]
+                self.dbQuery = self.config["database"]["query"]
+                self.outputFile = self.config["output"]["filename"]
+                self.useLog = self.config["logging"]["useLog"]
+                self.logPath = self.config["logging"]["logPath"]
+                self.logLevel = self.config["logging"]["logLevel"]
+                self.prdInstanceID = self.config["immutables"]["prd_instance_id"]
+                self.productGUID = self.config["immutables"]["product_guid"]
+                self.productName = self.config["immutables"]["product_name"]
+                self.productVersion = self.config["immutables"]["product_version"]
+                self.tokenFilepath = self.config["output"]["token"]
+                self.selectedPlatform = self.config["fortraPlatform"]["selectedPlatform"]
+                self.writeJsonfile = self.config["output"]["dumpTojson"]
+                self.pushToplatform = self.config["output"]["pushToplatform"]
+                self.queryOverride = self.config["database"]["overrideEmbeddedquery"]
+        except:
+            print("No config.toml. Please use example file and configure appropriately")
+            exit(1)
 
         if "dev" in self.selectedPlatform.lower():
             self.platformConfig = self.config["fortraPlatform"]["dev"]
@@ -55,7 +62,6 @@ class Inex:
             self.platformConfig = self.config["fortraPlatform"]["stage"]
         if "prod" in self.selectedPlatform.lower():
             self.platformConfig = self.config["fortraPlatform"]["prod"]
-        # print(self.platformConfig)
 
         #Setup logging
         inexLog(self)
@@ -63,9 +69,8 @@ class Inex:
         # create the connection to the database
         self.cursor = self.ic.inexSql.connectDatabase(self, self.db, self.dbDriver, self.dbServer, self.dbDatabase, self.dbUser, self.dbPassword)
 
-        # self.data = self.ic.inexSql.databaseQuery(self, self.cursor, self.dbQuery)
 
-        self.data = self.ic.inexSql.databaseQuery(self, self.cursor, self.sq.sqlQuerymodel.queryData())
+        self.data = self.ic.inexSql.databaseQuery(self, self.cursor, self.sq.sqlQuerymodel.queryData(self.queryOverride,self.dbQuery))
 
         self.modifiedData = processData(self.data, dataTemplate, prd_instance_id=self.prdInstanceID,\
                                          product_guid=self.productGUID,product_name=self.productName,product_version=self.productVersion)
