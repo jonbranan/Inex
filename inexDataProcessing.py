@@ -36,6 +36,7 @@ def processData(data, template, **kwargs):
             user_domain=row.get('SiteName'),\
             user_name=row.get('Actor'),\
             user_home_directory=row.get('VirtualFolderName'),\
+            description=row.get('Description'),\
             utype=identifyUtype(row.get('Command'))))
 
         if row.get('TransactionGUID') not in transactionLoginid:

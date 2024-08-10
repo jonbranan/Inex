@@ -48,6 +48,7 @@ class Inex:
         self.selectedPlatform = self.config["fortraPlatform"]["selectedPlatform"]
         self.writeJsonfile = self.config["output"]["dumpTojson"]
         self.pushToplatform = self.config["output"]["pushToplatform"]
+        self.queryOverride = self.config["database"]["overrideEmbeddedquery"]
 
         if "dev" in self.selectedPlatform.lower():
             self.platformConfig = self.config["fortraPlatform"]["dev"]
@@ -55,7 +56,6 @@ class Inex:
             self.platformConfig = self.config["fortraPlatform"]["stage"]
         if "prod" in self.selectedPlatform.lower():
             self.platformConfig = self.config["fortraPlatform"]["prod"]
-        # print(self.platformConfig)
 
         #Setup logging
         inexLog(self)
@@ -63,9 +63,8 @@ class Inex:
         # create the connection to the database
         self.cursor = self.ic.inexSql.connectDatabase(self, self.db, self.dbDriver, self.dbServer, self.dbDatabase, self.dbUser, self.dbPassword)
 
-        # self.data = self.ic.inexSql.databaseQuery(self, self.cursor, self.dbQuery)
 
-        self.data = self.ic.inexSql.databaseQuery(self, self.cursor, self.sq.sqlQuerymodel.queryData())
+        self.data = self.ic.inexSql.databaseQuery(self, self.cursor, self.sq.sqlQuerymodel.queryData(self.queryOverride,self.dbQuery))
 
         self.modifiedData = processData(self.data, dataTemplate, prd_instance_id=self.prdInstanceID,\
                                          product_guid=self.productGUID,product_name=self.productName,product_version=self.productVersion)

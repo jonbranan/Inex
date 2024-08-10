@@ -35,7 +35,7 @@ def dataTemplate(transactionType,**kwargs):
         "tenant_name":"GlobalScape",
         "time": kwargs.get('time'),
         "status_code": kwargs.get('status_code'),
-        "status_detail": kwargs.get('status_detail'),
+        "status_detail": kwargs.get('description'),
         "user": {
             "home_directory": kwargs.get('user_home_directory'),
             "uuid": kwargs.get('guid'),
