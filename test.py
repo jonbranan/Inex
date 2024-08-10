@@ -9,4 +9,13 @@ def connectDatabase(driver, server, database, user, password):
 def converttimestamp(t):
     print(int(t.timestamp()* 1000))
 
-a = converttimestamp(datetime.datetime(2024, 7, 23, 14, 26, 38, 214000))
+def builddict(keys,*args,**kwargs):
+    dict = {}
+    for key in keys:
+        dict[key] = kwargs.get(key)
+    print(dict)
+
+testfolder = '/Usr/a/asdf/asf'
+user = 'a'
+
+print(testfolder.split(f"/{user}/"))
