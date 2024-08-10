@@ -15,4 +15,7 @@ def builddict(keys,*args,**kwargs):
         dict[key] = kwargs.get(key)
     print(dict)
 
-a = builddict(["bytes","duration","dst_endpoint"],bytes=2490,duration=200,dst_enpoint={"port": 1,"ip": 1,"type":1})
+testfolder = '/Usr/a/asdf/asf'
+user = 'a'
+
+print(testfolder.split(f"/{user}/"))

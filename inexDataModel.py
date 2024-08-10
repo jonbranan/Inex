@@ -1,5 +1,5 @@
 def dataTemplate(transactionType,**kwargs):
-    general = {
+    uploadDownload = {
         "bytes" : kwargs.get('bytes_out'),
         "dst_endpoint": { 
             "port": kwargs.get('dst_endpoint_port'),
@@ -114,12 +114,14 @@ def dataTemplate(transactionType,**kwargs):
     },
     "utype": kwargs.get('utype')
     }
-    if transactionType == "FileUploaded":
-        template = general
-    if transactionType == "FileDownloaded":
-        template = general
-    if transactionType == "FileDeleted":
+
+    if transactionType == "file_uploaded":
+        template = uploadDownload
+    if transactionType == "file_downloaded":
+        template = uploadDownload
+    if transactionType == "file_deleted":
         template = fileDeleted
-    if transactionType == "Logon":
+    if transactionType == "user_logged_on":
         template = logon
+    
     return template
