@@ -123,5 +123,7 @@ def dataTemplate(transactionType,**kwargs):
         template = fileDeleted
     if transactionType == "user_logged_on":
         template = logon
+    if transactionType == "other":
+        template = {}
     
     return template
