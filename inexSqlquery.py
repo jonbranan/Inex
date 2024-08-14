@@ -7,5 +7,5 @@ class sqlQuerymodel:
         FROM tbl_Transactions t
              Full JOIN tbl_ProtocolCommands p ON(t.TransactionID=p.TransactionID)
              Full join tbl_Authentications a ON(t.TransactionID=a.TransactionID)
-        WHERE p.Time_stamp>@stopTime AND p.Command IS NOT NULL""".replace("30", daysTopull)
+        WHERE p.Time_stamp>@stopTime AND p.Command IS NOT NULL""".replace("30", str(daysTopull))
         return configQuery if overRideflag else q
