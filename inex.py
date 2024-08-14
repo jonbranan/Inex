@@ -52,6 +52,7 @@ class Inex:
                 self.writeJsonfile = self.config["output"]["dumpTojson"]
                 self.pushToplatform = self.config["output"]["pushToplatform"]
                 self.queryOverride = self.config["database"]["overrideEmbeddedquery"]
+                self.queryDaystopull = self.config["database"]["daysTopull"]
         except:
             print("No config.toml. Please use example file and configure appropriately")
             exit(1)
@@ -70,7 +71,7 @@ class Inex:
         self.cursor = self.ic.inexSql.connectDatabase(self, self.db, self.dbDriver, self.dbServer, self.dbDatabase, self.dbUser, self.dbPassword)
 
 
-        self.data = self.ic.inexSql.databaseQuery(self, self.cursor, self.sq.sqlQuerymodel.queryData(self.queryOverride,self.dbQuery))
+        self.data = self.ic.inexSql.databaseQuery(self, self.cursor, self.sq.sqlQuerymodel.queryData(self.queryOverride,self.dbQuery, self.queryDaystopull))
 
         self.modifiedData = processData(self.data, dataTemplate, prd_instance_id=self.prdInstanceID,\
                                          product_guid=self.productGUID,product_name=self.productName,product_version=self.productVersion)

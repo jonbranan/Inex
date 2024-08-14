@@ -24,6 +24,7 @@ secret = ""
 
 [database]
 overrideEmbeddedquery = false
+daysTopull = 30
 driver = "ODBC Driver 18 for SQL Server"
 server = "192.168.x.x"
 database = "EFTDB"
