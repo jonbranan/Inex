@@ -49,12 +49,14 @@ You will need a *config.toml* file in the same directory where *inex.py* or inex
 | logging | Set if, where and level of logging |
 
 The following settings are not obvious as to how they affect the application.
+> Note the #comments
 ```
 [fortraPlatform]
 selectedPlatform = "dev" # This will modify which environment the data is pushed to. The tenant_id and secret must be manually modified.
 
 [database]
 overrideEmbeddedquery = true # Choose if embedded query should be overridden.
+daysTopull = 30 # This setting is only related to the embedded query. Please note this will not affect query provided in config.toml
 driver = "ODBC Driver 18 for SQL Server" # Select which windows driver should be used. This one is recommended.
 
 [output]

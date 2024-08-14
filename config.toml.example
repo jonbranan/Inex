@@ -1,6 +1,33 @@
 [fortraPlatform]
 selectedPlatform = "dev"
 
+[output]
+pushToplatform = true
+dumpTojson = true
+filename ="./data.json"
+token = "./.token"
+
+[logging]
+use_log = true
+logLevel = "debug"
+logPath = "./inex.log"
+
+[database]
+overrideEmbeddedquery = false
+daysTopull = 10
+driver = "ODBC Driver 18 for SQL Server"
+server = "192.168.x.x"
+database = "EFTDB"
+user = "a"
+password = "a"
+query = """DECLARE @stopTime DATETIME2
+SET @stopTime=DATEADD(DAY, -30, GETDATE())
+SELECT p.ProtocolCommandID, t.Time_stamp, p.RemoteIP, p.RemotePort, p.LocalIP, p.LocalPort, p.Protocol, p.SiteName, p.Command, p.FileName, p.VirtualFolderName, p.FileSize, p.TransferTime, p.BytesTransferred, p.Description, p.ResultID, t.TransactionID, p.Actor, t.TransactionObject, t.NodeName, t.TransactionGUID, a.Protocol user_type
+FROM tbl_Transactions t
+     Full JOIN tbl_ProtocolCommands p ON(t.TransactionID=p.TransactionID)
+     Full JOIN tbl_Authentications a ON(t.TransactionID=a.TransactionID)
+WHERE p.Time_stamp>@stopTime AND p.Command IS NOT NULL"""
+
 [fortraPlatform.dev]
 idp = "https://foundation.foundation-dev.cloudops.fortradev.com/idp/realms/products/protocol/openid-connect/token"
 efc_url = "https://efc.efc-dev.cloudops.fortradev.com"
@@ -22,34 +49,8 @@ tenant_id = ""
 client_id = "eft-event-generator-confidential"
 secret = ""
 
-[database]
-overrideEmbeddedquery = false
-driver = "ODBC Driver 18 for SQL Server"
-server = "192.168.x.x"
-database = "EFTDB"
-user = "a"
-password = "a"
-query = """DECLARE @stopTime DATETIME2
-SET @stopTime=DATEADD(DAY, -30, GETDATE())
-SELECT p.ProtocolCommandID, t.Time_stamp, p.RemoteIP, p.RemotePort, p.LocalIP, p.LocalPort, p.Protocol, p.SiteName, p.Command, p.FileName, p.VirtualFolderName, p.FileSize, p.TransferTime, p.BytesTransferred, p.Description, p.ResultID, t.TransactionID, p.Actor, t.TransactionObject, t.NodeName, t.TransactionGUID, a.Protocol user_type
-FROM tbl_Transactions t
-     Full JOIN tbl_ProtocolCommands p ON(t.TransactionID=p.TransactionID)
-     Full JOIN tbl_Authentications a ON(t.TransactionID=a.TransactionID)
-WHERE p.Time_stamp>@stopTime AND p.Command IS NOT NULL"""
-
 [immutables]
 prd_instance_id = 1
 product_guid = "asdf"
 product_name = "EFT"
 product_version ="8.1.0.9"
-
-[output]
-pushToplatform = true
-dumpTojson = true
-filename ="./data.json"
-token = "./.token"
-
-[logging]
-use_log = true
-logLevel = "debug"
-logPath = "./inex.log"
