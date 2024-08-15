@@ -43,18 +43,19 @@ class Inex:
                 self.useLog = self.config["logging"]["useLog"]
                 self.logPath = self.config["logging"]["logPath"]
                 self.logLevel = self.config["logging"]["logLevel"]
-                self.prdInstanceID = self.config["immutables"]["prd_instance_id"]
-                self.productGUID = self.config["immutables"]["product_guid"]
+                self.prdExttenantname = self.config["immutables"]["prd_ext_tenant_name"]
                 self.productName = self.config["immutables"]["product_name"]
-                self.productVersion = self.config["immutables"]["product_version"]
                 self.tokenFilepath = self.config["output"]["token"]
                 self.selectedPlatform = self.config["fortraPlatform"]["selectedPlatform"]
                 self.writeJsonfile = self.config["output"]["dumpTojson"]
                 self.pushToplatform = self.config["output"]["pushToplatform"]
                 self.queryOverride = self.config["database"]["overrideEmbeddedquery"]
                 self.queryDaystopull = self.config["database"]["daysTopull"]
-        except:
-            print("No config.toml. Please use example file and configure appropriately")
+        except Exception as e:
+            print("No config.toml or possibly missing settings in the file. Please use config.toml.example file and configure appropriately")
+            self.il.error(e)
+            print(e)
+
             exit(1)
 
         if "dev" in self.selectedPlatform.lower():
@@ -73,11 +74,11 @@ class Inex:
 
         self.data = self.ic.inexSql.databaseQuery(self, self.cursor, self.sq.sqlQuerymodel.queryData(self.queryOverride,self.dbQuery, self.queryDaystopull))
 
-        self.modifiedData = processData(self.data, dataTemplate, prd_instance_id=self.prdInstanceID,\
-                                         product_guid=self.productGUID,product_name=self.productName,product_version=self.productVersion)
-        
+        self.modifiedData = processData(self.data, dataTemplate, prd_ext_tenant_name=self.prdExttenantname,product_name=self.productName,\
+                                        prd_ext_tenant_id=self.platformConfig["tenant_id"])
+
         if self.pushToplatform:
-            inexConnect.fortraEFC.pushPayload(self)
+            inexConnect.fortraEFC.__init__(self)
 
         # TODO: move this to its own function
         if self.useLog:
