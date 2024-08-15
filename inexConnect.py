@@ -62,6 +62,7 @@ class fortraEFC:
 
     def pushPayload(self):
         fortraEFC.readToken(self)
+        print(self.tokenData)
         try:
             url = f'{self.platformConfig["efc_url"]}/api/v1/unity/data/{self.platformConfig["tenant_id"]}/machine_event'
             pushPayloadResponse = self.r.post(url, headers={'Authorization': f'bearer {self.tokenData["access_token"]}'},\

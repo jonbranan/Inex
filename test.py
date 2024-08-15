@@ -18,4 +18,21 @@ def builddict(keys,*args,**kwargs):
 testfolder = '/Usr/a/asdf/asf'
 user = 'a'
 
-print(testfolder.split(f"/{user}/"))
+def identifyUtype(obj):
+    """Process Type of transaction based on string that passed in.
+    Return transaction type."""
+    user_logged_on = ['AUTH']
+    file_deleted = ["dele"]
+    file_uploaded = ["created"]
+    file_downloaded = ["sent"]
+
+    if obj in user_logged_on:
+        return "user_logged_on"
+    if obj in file_deleted:
+        return "file_deleted"
+    if obj in file_uploaded:
+        return "file_uploaded"
+    if obj in file_downloaded:
+        return "file_downloaded"
+    else:
+        return "other"

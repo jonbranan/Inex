@@ -1,10 +1,15 @@
 def processData(data, template, **kwargs):
-
+    """Translates data from sql query to the appropriate place in the respective template.
+    Accepts data, which is the sql query output, the template function, and finally
+    additional data to insert into the template."""
     processedData = []
     transactionLoginid = []
 
     for row in data:
         # print(f'Row: {row}')
+        if identifyUtype(row.get('Command')) == "other":
+            continue
+        
         if row.get('Command') == None:
             continue
         try:
@@ -75,6 +80,7 @@ def processData(data, template, **kwargs):
     return processedData
 
 def identifyUserType(obj):
+    """Check string if it has Admin-> return Administrator else return User."""
     if obj:
         if "Admin" in obj:
             return "Administrator"
@@ -83,6 +89,8 @@ def identifyUserType(obj):
     else:
         return None
 def identifyUtype(obj):
+    """Process Type of transaction based on string that passed in.
+    Return transaction type."""
     user_logged_on = ['AUTH']
     file_deleted = ["dele"]
     file_uploaded = ["created"]
