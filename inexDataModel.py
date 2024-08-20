@@ -14,7 +14,7 @@ def dataTemplate(transactionType,**kwargs):
             "name": kwargs.get('file_name'),
             "path": kwargs.get('file_path')
         },
-        "guid": f'{transactionType.split("_")[1].rstrip("d").rstrip("e")}:{kwargs.get("guid")}',
+        "guid": kwargs.get('file_uid'),
         "node_name": kwargs.get('node_name'),
         "prd_ext_tenant_id": kwargs.get('prd_ext_tenant_id'),
         "product_name": kwargs.get('product_name'),
@@ -55,13 +55,12 @@ def dataTemplate(transactionType,**kwargs):
         },
         "duration": kwargs.get('duration'),
         "file": {
-            "created_time": kwargs.get('file_created_time'),
             "uid": kwargs.get('file_uid'),
             "size": kwargs.get('file_size'),
             "name": kwargs.get('file_name'),
             "path": kwargs.get('file_path')
         },
-        "guid": f'{transactionType.split("_")[1].rstrip("d").rstrip("e")}:{kwargs.get("guid")}',
+        "guid": kwargs.get('file_uid'),
         "node_name": kwargs.get('node_name'),
         "prd_ext_tenant_id": kwargs.get('prd_ext_tenant_id'),
         "product_name": kwargs.get('product_name'),
