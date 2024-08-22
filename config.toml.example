@@ -2,19 +2,19 @@
 selectedPlatform = "dev"
 
 [output]
-pushToplatform = true
+pushToplatform = false
 dumpTojson = true
 filename ="./data.json"
 token = "./.token"
 
 [logging]
-use_log = true
+useLog = true
 logLevel = "debug"
 logPath = "./inex.log"
 
 [database]
 overrideEmbeddedquery = false
-daysTopull = 10
+daysTopull = 20
 driver = "ODBC Driver 18 for SQL Server"
 server = "192.168.x.x"
 database = "EFTDB"
@@ -22,7 +22,7 @@ user = "a"
 password = "a"
 query = """DECLARE @stopTime DATETIME2
 SET @stopTime=DATEADD(DAY, -30, GETDATE())
-SELECT p.ProtocolCommandID, t.Time_stamp, p.RemoteIP, p.RemotePort, p.LocalIP, p.LocalPort, p.Protocol, p.SiteName, p.Command, p.FileName, p.VirtualFolderName, p.FileSize, p.TransferTime, p.BytesTransferred, p.Description, p.ResultID, t.TransactionID, p.Actor, t.TransactionObject, t.NodeName, t.TransactionGUID, a.Protocol user_type
+SELECT p.ProtocolCommandID, t.Time_stamp, p.RemoteIP, p.RemotePort, p.LocalIP, p.LocalPort, p.Protocol, p.SiteName, p.Command, p.FileName, p.PhysicalFolderName, p.VirtualFolderName, p.FileSize, p.TransferTime, p.BytesTransferred, p.Description, p.ResultID, t.TransactionID, p.Actor, t.TransactionObject, t.NodeName, t.TransactionGUID, a.Protocol user_type
 FROM tbl_Transactions t
      Full JOIN tbl_ProtocolCommands p ON(t.TransactionID=p.TransactionID)
      Full JOIN tbl_Authentications a ON(t.TransactionID=a.TransactionID)
@@ -49,8 +49,6 @@ tenant_id = ""
 client_id = "eft-event-generator-confidential"
 secret = ""
 
-[immutables]
-prd_instance_id = 1
-product_guid = "asdf"
-product_name = "EFT"
-product_version ="8.1.0.9"
+[immutables] 
+product_name = "GlobalScape EFT"
+prd_ext_tenant_name = "GlobalScape EFT"

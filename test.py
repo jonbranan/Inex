@@ -36,3 +36,7 @@ def identifyUtype(obj):
         return "file_downloaded"
     else:
         return "other"
+    
+transactionType = 'file_uploaded'
+
+print(transactionType.split("_")[1].rstrip("d").rstrip("e"))
