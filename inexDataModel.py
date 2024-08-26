@@ -1,4 +1,8 @@
 def dataTemplate(transactionType,**kwargs):
+    """Created templates for use. This function forms json data into an
+    appropriate model for EFC. It returnes the appropriate template based
+    on the transaction type passed into the function. The logic to process
+    this is at the bottom of the function."""
     upload = {
         "bytes" : kwargs.get('bytes'),
         "dst_endpoint": { 

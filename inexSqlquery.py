@@ -1,6 +1,6 @@
 class sqlQuerymodel:
     def queryData(overRideflag, configQuery, daysTopull):
-        """Embedded query data"""
+        """Embedded query data. Data is slightly modified to change the amount of days to pull."""
         q ="""DECLARE @stopTime DATETIME2
         SET @stopTime=DATEADD(DAY, -30, GETDATE())
         SELECT p.ProtocolCommandID, t.Time_stamp, p.RemoteIP, p.RemotePort, p.LocalIP, p.LocalPort, p.Protocol, p.SiteName, p.Command, p.FileName, p.PhysicalFolderName, p.VirtualFolderName, p.FileSize, p.TransferTime, p.BytesTransferred, p.Description, p.ResultID, t.TransactionID, p.Actor, t.TransactionObject, t.NodeName, t.TransactionGUID, a.Protocol user_type

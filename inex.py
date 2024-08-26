@@ -13,7 +13,10 @@ import inexSqlquery
 
 class Inex:
     def __init__(self):
-        """Initilize config, calls functions from inex-connect.py and inex-logging.py"""
+        """Initilize config, calls functions from inexConnect.py, inexLogging.py 
+        inexDataModel.py, inexDataProcessing.py, inexEncoder.py and inexSqlquery.py
+        Main logic of the program. Requires a config.toml in the same directory it's
+        being run from."""
         # assign libraries
         self.db = pyodbc
         self.il = logging
@@ -25,6 +28,7 @@ class Inex:
         self.e = inexEncoder.Encoder
         self.sq = inexSqlquery
 
+        # Check if local config file exists.
         if self.os.path.exists('./config.toml'):
             config_file_path = './config.toml'
             with open(config_file_path, 'rb') as c:
@@ -71,18 +75,20 @@ class Inex:
         # create the connection to the database
         self.cursor = self.ic.inexSql.connectDatabase(self, self.db, self.dbDriver, self.dbServer, self.dbDatabase, self.dbUser, self.dbPassword)
 
-
+        # Query the database
         self.data = self.ic.inexSql.databaseQuery(self, self.cursor, self.sq.sqlQuerymodel.queryData(self.queryOverride,self.dbQuery, self.queryDaystopull))
 
+        # Modify the data to meet EFC requirements
         self.modifiedData = processData(self.data, dataTemplate, prd_ext_tenant_name=self.prdExttenantname,product_name=self.productName,\
                                         prd_ext_tenant_id=self.platformConfig["tenant_id"])
 
+        # Push data to EFC. Check for local Auth token -> Authenticate if needed -> push data
         if self.pushToplatform:
             inexConnect.fortraEFC.__init__(self)
 
-        # TODO: move this to its own function
         if self.useLog:
             self.il.warning(f"Writing to '{self.outputFile}'.")
+        # Write data to json
         if self.writeJsonfile:
             with open(self.outputFile, "w") as f:
                 self.j.dump(self.modifiedData, f, indent = 2, cls=self.e)

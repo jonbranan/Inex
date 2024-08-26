@@ -1,7 +1,8 @@
 def processData(data, template, **kwargs):
     """Translates data from sql query to the appropriate place in the respective template.
     Accepts data, which is the sql query output, the template function, and finally
-    additional data to insert into the template."""
+    additional data to insert into the template. Uses other functions to further 
+    process row data."""
     processedData = []
     transactionLoginid = []
     
@@ -102,6 +103,12 @@ def identifyUserType(obj):
         return None
 
 def parseHomefolder(user, virtualfolder):
+    """Extract users home folder using the username. Will not work on edge cases
+    such as when a users home folder does not have the user name. When that occurs
+    it is impossible to know based on the arm data what the home folder is.
+    This function is an assumption so it may return the incorrect home folder. 
+    This function finds the user name and takes the path from the left of the folder
+    as the home folder. There are cases where this may not be accurate."""
     if user:
         userSplit = f'/{user}/'
     if virtualfolder:

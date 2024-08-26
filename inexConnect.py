@@ -20,6 +20,7 @@ class inexSql:
         return  cursor
 
     def databaseQuery(self, cursor, query, args=()):
+        """Use the database connection to send a query."""
         if self.useLog:
             self.il.debug(f"Query:")
             self.il.debug(query)
@@ -43,7 +44,10 @@ class inexSql:
         return r
 
 class fortraEFC:
+    """Class to connect to fortra EFC. It will authenticate and push rest payloads. 
+    Writes a .token file to the same directory script was run in."""
     def __init__(self):
+        """This is the logic for how authentication is handled"""
         # Check if .token file is present
         if fortraEFC.readToken(self) == 1:
             # Get fresh token. First run.
@@ -57,6 +61,8 @@ class fortraEFC:
             fortraEFC.pushPayload(self)
 
     def readToken(self):
+        """Looks locally for a .token file. Returns a numeral code
+        for logic in the init method."""
         if self.os.path.exists(self.tokenFilepath):
             with open(self.tokenFilepath, 'rb') as t:
                 self.tokenData = self.j.load(t)
@@ -66,6 +72,7 @@ class fortraEFC:
             return 1
     
     def getToken(self):
+        """Gets a token from fortra idp."""
         self.tokenData = self.r.post(self.platformConfig["idp"], data={"grant_type":"client_credentials",\
                                                                               "client_id": self.platformConfig["client_id"],\
                                                                               "client_secret": self.platformConfig["secret"],})
@@ -73,12 +80,14 @@ class fortraEFC:
         self.il.debug(f'getToken {self.tokenData["access_token"]}')
 
     def writeToken(self):
+        """Writes a token to a local file named '.token'."""
         fortraEFC.getToken(self)
         with open(self.tokenFilepath, "w") as f:
             self.j.dump(self.tokenData, f, indent = 2)
             self.il.debug(f'writeToken {self.tokenData["access_token"]}')
 
     def pushPayload(self):
+        """Sends data to fortra EFC. Requires a token from the idp."""
         self.il.debug(f'pushPayload {self.tokenData["access_token"]}')
         url = f'{self.platformConfig["efc_url"]}/api/v1/unity/data/{self.platformConfig["tenant_id"]}/machine_event'
         pushPayloadResponse = self.r.post(url, headers={'Authorization': f'Bearer {self.tokenData["access_token"]}'},\
