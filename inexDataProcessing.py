@@ -17,6 +17,7 @@ def processData(data, template, **kwargs):
             continue
 
         userType = identifyUserType(row.get('user_type'))
+        userHome = parseHomefolder(row.get('Actor'),row.get('VirtualFolderName'))
         try:
             processedData.append(template(identifyUtypecommand,\
                 prd_ext_tenant_name=kwargs.get('prd_ext_tenant_name'),\
@@ -45,7 +46,7 @@ def processData(data, template, **kwargs):
                 duration=row.get('TransferTime'),\
                 user_type=userType,\
                 user_name=row.get('Actor'),\
-                user_home_directory=row.get('VirtualFolderName'),\
+                user_home_directory=userHome,\
                 utype=identifyUtypecommand))
         except UnboundLocalError:
             print(f'Problem row GUID:{row.get("TransactionGUID")} ::: TransactionObject:{row.get("TransactionObject")} Command: {row.get("Command")}')
@@ -80,7 +81,7 @@ def processData(data, template, **kwargs):
                     user_uid=row.get('TransactionID'),\
                     user_type=userType,\
                     user_name=row.get('Actor'),\
-                    user_home_directory=row.get('PhysicalFolderName'),\
+                    user_home_directory=userHome,\
                     utype=identifyUtypetransactionObject\
                     ))
                 transactionLoginid.append(row.get('TransactionGUID'))
@@ -99,6 +100,14 @@ def identifyUserType(obj):
             return "User"
     else:
         return None
+
+def parseHomefolder(user, virtualfolder):
+    if user:
+        userSplit = f'/{user}/'
+    if virtualfolder:
+        if userSplit in virtualfolder:
+            home = virtualfolder.split(userSplit)[0] + userSplit
+            return home if home else None
 
 def identifyUtype(obj):
     """Process Type of transaction based on string that passed in.

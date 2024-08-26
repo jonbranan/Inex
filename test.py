@@ -15,8 +15,6 @@ def builddict(keys,*args,**kwargs):
         dict[key] = kwargs.get(key)
     print(dict)
 
-testfolder = '/Usr/a/asdf/asf'
-user = 'a'
 
 def identifyUtype(obj):
     """Process Type of transaction based on string that passed in.
@@ -37,6 +35,14 @@ def identifyUtype(obj):
     else:
         return "other"
     
-transactionType = 'file_uploaded'
 
-print(transactionType.split("_")[1].rstrip("d").rstrip("e"))
+testfolder = '/Usr/a/asdf/asf/asdfas/asdfasdf/'
+user = 'a'
+
+def parsehomefolder(user, virtualfolder):
+    userSplit = f'/{user}/'
+    home = virtualfolder.split(userSplit)[0] + userSplit
+    print(home)
+    return home
+
+a = parsehomefolder(user, testfolder)
