@@ -40,4 +40,4 @@ jobs:
         with:
           files: |
             ${{ gitea.workspace }}/dist/inex.exe
-            ${{ gitea.workspace }}/config.toml.sample
+            ${{ gitea.workspace }}/config.toml.example
